@@ -2,6 +2,9 @@ package com.ecommerce.ECommerceAPI.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "address")
 public class Address {
@@ -22,6 +25,29 @@ public class Address {
 
     @Column(name = "country", nullable = false, length = 75)
     private String country;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private LocalUser user;
+
+    @OneToMany(mappedBy = "address", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<WebOrder> orders = new ArrayList<>();
+
+    public List<WebOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<WebOrder> orders) {
+        this.orders = orders;
+    }
+
+    public LocalUser getUser() {
+        return user;
+    }
+
+    public void setUser(LocalUser user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
