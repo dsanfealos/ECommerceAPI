@@ -2,6 +2,9 @@ package com.ecommerce.ECommerceAPI.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "Local_user")
 public class LocalUser {
@@ -25,6 +28,28 @@ public class LocalUser {
 
     @Column(name = "lastName", nullable = false)
     private String lastName;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Address> addresses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<WebOrder> webOrders = new ArrayList<>();
+
+    public List<WebOrder> getWebOrders() {
+        return webOrders;
+    }
+
+    public void setWebOrders(List<WebOrder> webOrders) {
+        this.webOrders = webOrders;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
 
     public Long getId() {
         return id;
