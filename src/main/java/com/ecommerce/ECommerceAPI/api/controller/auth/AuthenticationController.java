@@ -29,12 +29,8 @@ public class AuthenticationController {
      */
     @PostMapping("/register")
     public ResponseEntity registerUser(@Valid @RequestBody RegistrationBody registrationBody){
-        try {
-            userService.registerUser(registrationBody);
-            return ResponseEntity.ok().build();
-        } catch (UserAlreadyExistsException ex) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        userService.registerUser(registrationBody);
+        return ResponseEntity.ok().build();
     }
 
     /**
