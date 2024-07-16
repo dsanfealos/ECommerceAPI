@@ -1,5 +1,6 @@
 package com.ecommerce.ECommerceAPI.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -26,10 +27,12 @@ public class Address {
     @Column(name = "country", nullable = false, length = 75)
     private String country;
 
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private LocalUser user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "address", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<WebOrder> orders = new ArrayList<>();
 

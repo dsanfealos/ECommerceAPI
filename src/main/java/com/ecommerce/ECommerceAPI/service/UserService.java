@@ -32,7 +32,7 @@ public class UserService {
     public LocalUser registerUser(RegistrationBody registrationBody) throws UserAlreadyExistsException {
         if(localUserDAO.findByEmailIgnoreCase(registrationBody.getEmail()).isPresent() ||
                 localUserDAO.findByUsernameIgnoreCase(registrationBody.getUsername()).isPresent()) {
-            throw new UserAlreadyExistsException();
+            throw new UserAlreadyExistsException("A user with that username or email already exists!");
         }
         LocalUser user = new LocalUser();
         user.setEmail(registrationBody.getEmail());
