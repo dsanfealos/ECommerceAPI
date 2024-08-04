@@ -1,5 +1,6 @@
 package com.ecommerce.ECommerceAPI.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class Product {
     @OneToOne(mappedBy = "product", cascade = CascadeType.REMOVE, optional = false, orphanRemoval = true)
     private Inventory inventory;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<WebOrderQuantities> webOrderQuantities = new ArrayList<>();
 

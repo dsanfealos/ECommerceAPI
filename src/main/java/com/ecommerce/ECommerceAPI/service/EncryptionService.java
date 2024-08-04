@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 public class EncryptionService {
 
     @Value(("${encryption.salt.rounds}"))
-    private int satlRounds;
+    private int saltRounds;
     private String salt;
 
     @PostConstruct
     public void postConstruct(){
-        salt = BCrypt.gensalt(satlRounds);
+        salt = BCrypt.gensalt(saltRounds);
     }
 
     public String encryptPassword(String password){
