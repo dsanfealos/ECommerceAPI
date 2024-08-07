@@ -24,23 +24,43 @@ public class RegistrationBody {
     @NotBlank
     private String lastName;
 
-    public String getUsername() {
+    public @NotNull @NotBlank @Size(min = 3, max = 255) String getUsername() {
         return username;
     }
 
-    public String getEmail() {
+    public void setUsername(@NotNull @NotBlank @Size(min = 3, max = 255) String username) {
+        this.username = username;
+    }
+
+    public @NotNull @NotBlank @Email String getEmail() {
         return email;
     }
 
-    public String getPassword() {
+    public void setEmail(@NotNull @NotBlank @Email String email) {
+        this.email = email;
+    }
+
+    public @NotNull @NotBlank @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$") @Size(min = 6, max = 32) String getPassword() {
         return password;
     }
 
-    public String getFirstName() {
+    public void setPassword(@NotNull @NotBlank @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$") @Size(min = 6, max = 32) String password) {
+        this.password = password;
+    }
+
+    public @NotNull @NotBlank String getFirstName() {
         return firstName;
     }
 
-    public String getLastName() {
+    public void setFirstName(@NotNull @NotBlank String firstName) {
+        this.firstName = firstName;
+    }
+
+    public @NotNull @NotBlank String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(@NotNull @NotBlank String lastName) {
+        this.lastName = lastName;
     }
 }
