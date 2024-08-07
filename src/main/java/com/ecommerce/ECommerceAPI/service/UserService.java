@@ -97,7 +97,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean verifiedUser(String token){
+    public boolean verifyUser(String token){
         Optional<VerificationToken> opToken = verificationTokenDAO.findByToken(token);
         if (opToken.isPresent()){
             VerificationToken verificationToken = opToken.get();
