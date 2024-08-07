@@ -75,7 +75,7 @@ public class AuthenticationController {
 
     @PostMapping("/verify")
     public ResponseEntity verifyEmail(@RequestParam String token){
-        if (userService.verifiedUser(token)){
+        if (userService.verifyUser(token)){
             return ResponseEntity.ok().build();
         }else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
