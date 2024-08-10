@@ -30,7 +30,8 @@ public class WebSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable);
         http.addFilterBefore(jwtRequestFilter, AuthorizationFilter.class);
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/product", "/auth/register", "/auth/login", "/auth/verify", "/error").permitAll()
+                .requestMatchers("/product", "/auth/register", "/auth/login",
+                        "/auth/verify", "/error", "/auth/forgot", "/auth/reset").permitAll()
                 .anyRequest().authenticated());
         return http.build();
     }
