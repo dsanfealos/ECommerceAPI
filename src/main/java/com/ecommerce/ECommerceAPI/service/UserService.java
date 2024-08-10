@@ -1,8 +1,10 @@
 package com.ecommerce.ECommerceAPI.service;
 
 import com.ecommerce.ECommerceAPI.api.model.LoginBody;
+import com.ecommerce.ECommerceAPI.api.model.PasswordResetBody;
 import com.ecommerce.ECommerceAPI.api.model.RegistrationBody;
 import com.ecommerce.ECommerceAPI.exception.EmailFailureException;
+import com.ecommerce.ECommerceAPI.exception.EmailNotFoundException;
 import com.ecommerce.ECommerceAPI.exception.UserAlreadyExistsException;
 import com.ecommerce.ECommerceAPI.exception.UserNotVerifiedException;
 import com.ecommerce.ECommerceAPI.model.LocalUser;
@@ -71,6 +73,7 @@ public class UserService {
      * @param loginBody The login request.
      * @return The authentication token. Null if the request was invalid.
      * @throws UserNotVerifiedException The user is not verified or the email could not be sent.
+     * @throws EmailFailureException The email could not be sent.
      */
     public String loginUser(LoginBody loginBody) throws UserNotVerifiedException, EmailFailureException {
         Optional<LocalUser> opUser= localUserDAO.findByUsernameIgnoreCase(loginBody.getUsername());
@@ -110,5 +113,26 @@ public class UserService {
             }
         }
         return false;
+    }
+
+    public void forgotPassword(String email) throws EmailNotFoundException, EmailFailureException {
+        Optional<LocalUser> opUser = localUserDAO.findByEmailIgnoreCase(email);
+        if (opUser.isPresent()){
+            LocalUser user = opUser.get();
+            String token = jwtService.generatePasswordResetJWT(user);
+            emailService.sendPasswordResetEmail(user, token);
+        }else {
+            throw new EmailNotFoundException();
+        }
+    }
+
+    public void resetPassword(PasswordResetBody body){
+        String email = jwtService.getResetPasswordEmail(body.getToken());
+        Optional<LocalUser> opUser = localUserDAO.findByEmailIgnoreCase(email);
+        if (opUser.isPresent()){
+            LocalUser user = opUser.get();
+            user.setPassword(encryptionService.encryptPassword(body.getPassword()));
+            localUserDAO.save(user);
+        }
     }
 }

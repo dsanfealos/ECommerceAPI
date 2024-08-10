@@ -1,9 +1,13 @@
 package com.ecommerce.ECommerceAPI.service;
 
 import com.ecommerce.ECommerceAPI.api.model.LoginBody;
+import com.ecommerce.ECommerceAPI.api.model.PasswordResetBody;
 import com.ecommerce.ECommerceAPI.exception.EmailFailureException;
+import com.ecommerce.ECommerceAPI.exception.EmailNotFoundException;
 import com.ecommerce.ECommerceAPI.exception.UserNotVerifiedException;
+import com.ecommerce.ECommerceAPI.model.LocalUser;
 import com.ecommerce.ECommerceAPI.model.VerificationToken;
+import com.ecommerce.ECommerceAPI.model.dao.LocalUserDAO;
 import com.ecommerce.ECommerceAPI.model.dao.VerificationTokenDAO;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
@@ -37,6 +41,15 @@ public class UserServiceTest {
     /** The UserService to test. */
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JWTService jwtService;
+
+    @Autowired
+    private LocalUserDAO localUserDAO;
+
+    @Autowired
+    private EncryptionService encryptionService;
 
     @Autowired
     private VerificationTokenDAO verificationTokenDAO;
@@ -118,4 +131,27 @@ public class UserServiceTest {
         Assertions.assertNotNull(body, "The user should now be verified");
     }
 
+    @Test
+    @Transactional
+    public void testForgotPassword() throws MessagingException {
+        Assertions.assertThrows(EmailNotFoundException.class, () -> userService.forgotPassword("UserNotExist@junit.com"));
+        Assertions.assertDoesNotThrow(() -> userService.forgotPassword("UserA@junit.com"), "Non existing" +
+                "email should be rejected.");
+        Assertions.assertEquals("UserA@junit.com", greenMailExtension.getReceivedMessages()[0]
+                .getRecipients(Message.RecipientType.TO)[0].toString(), "Password reset" +
+                "email should be sent.");
+    }
+
+    @Test
+    @Transactional
+    public void testResetPassword(){
+        LocalUser user = localUserDAO.findByUsernameIgnoreCase("UserA").get();
+        String token = jwtService.generatePasswordResetJWT(user);
+        PasswordResetBody body = new PasswordResetBody();
+        body.setToken(token);
+        body.setPassword("Password123456");
+        userService.resetPassword(body);
+        Assertions.assertTrue(encryptionService.verifyPassword("Password123456",user.getPassword()),
+                "Password change should be written to DB.");
+    }
 }
