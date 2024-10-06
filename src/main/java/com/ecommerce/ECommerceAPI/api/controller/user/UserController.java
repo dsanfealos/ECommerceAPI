@@ -32,8 +32,8 @@ public class UserController {
 
 
     @PutMapping("/{userId}/address")
-    public ResponseEntity<Address> putAdress(@AuthenticationPrincipal LocalUser user, @PathVariable Long userId,
-                                             @RequestBody Address address){
+    public ResponseEntity<Address> putAddress(@AuthenticationPrincipal LocalUser user, @PathVariable Long userId,
+                                              @RequestBody Address address){
         if (!userHasPermission(user, userId)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -45,8 +45,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/address/{addressId}")
-    public ResponseEntity<Address> patchAdress(@AuthenticationPrincipal LocalUser user, @PathVariable Long userId,
-                                               @PathVariable Long addressId, @RequestBody Address address){
+    public ResponseEntity<Address> patchAddress(@AuthenticationPrincipal LocalUser user, @PathVariable Long userId,
+                                                @PathVariable Long addressId, @RequestBody Address address){
         if (!userHasPermission(user, userId)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
