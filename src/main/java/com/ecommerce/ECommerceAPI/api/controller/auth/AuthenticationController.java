@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -87,6 +89,13 @@ public class AuthenticationController {
     @GetMapping("/me")
     public LocalUser getLoggedInUserProfile(@AuthenticationPrincipal LocalUser user){
         return user;
+    }
+
+    //OK
+    @PatchMapping("/me")
+    public LocalUser updateLoggedProfile(@AuthenticationPrincipal LocalUser user,
+                                              @RequestBody Map<String, String> json){
+        return userService.updateName(user.getId(), json.get("firstName"), json.get("lastName"));
     }
 
     @PostMapping("/forgot")
