@@ -4,20 +4,16 @@ import com.ecommerce.ECommerceAPI.api.model.DataChange;
 import com.ecommerce.ECommerceAPI.model.Address;
 import com.ecommerce.ECommerceAPI.model.LocalUser;
 import com.ecommerce.ECommerceAPI.model.dao.AddressDAO;
+import com.ecommerce.ECommerceAPI.model.dao.LocalUserDAO;
 import com.ecommerce.ECommerceAPI.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -31,6 +27,7 @@ public class UserController {
     private AddressDAO addressDAO;
     private SimpMessagingTemplate simpMessagingTemplate;
     private UserService userService;
+    private LocalUserDAO localUserDAO;
 
     /**
      * Constructor for spring injection.
@@ -40,10 +37,11 @@ public class UserController {
      */
     public UserController(AddressDAO addressDAO,
                           SimpMessagingTemplate simpMessagingTemplate,
-                          UserService userService) {
+                          UserService userService, LocalUserDAO localUserDAO) {
         this.addressDAO = addressDAO;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.userService = userService;
+        this.localUserDAO = localUserDAO;
     }
 
     /**
@@ -114,6 +112,22 @@ public class UserController {
             }
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    //ADMIN - OK
+    @GetMapping("/{userId}")
+    public ResponseEntity<LocalUser> getLocalUser(@PathVariable Long userId){
+        Optional<LocalUser> user = localUserDAO.findById(userId);
+        if (user.isPresent()) return ResponseEntity.ok(user.get());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    //ADMIN - OK
+    @GetMapping("/search")
+    public ResponseEntity<LocalUser> getLocalUserByUsername(@RequestParam String username){
+        Optional<LocalUser> user = localUserDAO.findByUsernameIgnoreCase(username);
+        if (user.isPresent()) return ResponseEntity.ok(user.get());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 }

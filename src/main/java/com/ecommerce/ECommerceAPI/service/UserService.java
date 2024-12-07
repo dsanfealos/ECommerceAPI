@@ -179,4 +179,11 @@ public class UserService {
         return user.getId() == id;
     }
 
+    public LocalUser updateName(Long id, String firstName, String lastName){
+        LocalUser user = localUserDAO.findById(id).get();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        return localUserDAO.save(user);
+    }
+
 }
