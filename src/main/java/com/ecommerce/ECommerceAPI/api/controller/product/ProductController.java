@@ -1,7 +1,9 @@
 package com.ecommerce.ECommerceAPI.api.controller.product;
 
+import com.ecommerce.ECommerceAPI.model.Inventory;
 import com.ecommerce.ECommerceAPI.model.Product;
 import com.ecommerce.ECommerceAPI.service.ProductService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,18 +38,19 @@ public class ProductController {
 
     //ADMIN - OK
     @PostMapping
-    public String createProduct(@RequestBody Map<String, String> json){
-        productService.createProduct(json.get("name"), Double.valueOf(json.get("price")),
+    public ResponseEntity<Product> createProduct(@RequestBody Map<String, String> json){
+        Product product = productService.createProduct(json.get("name"), Double.valueOf(json.get("price")),
                 json.get("shortDesc"), json.get("longDesc"),
                 Integer.valueOf(json.get("quantity")));
-        return "Product created successfully.";
+        return ResponseEntity.ok(product);
     }
 
     //OK
     @PutMapping
-    public String updateProductQuantity(@RequestBody Map<String,String> json){
-        return productService.updateProductQuantity(Long.valueOf(json.get("id")),
+    public ResponseEntity<Inventory> updateProductQuantity(@RequestBody Map<String,String> json){
+        Inventory inventory = productService.updateProductQuantity(Long.valueOf(json.get("id")),
                 Integer.valueOf(json.get("quantity")));
+        return ResponseEntity.ok(inventory);
     }
 
     //ADMIN - OK

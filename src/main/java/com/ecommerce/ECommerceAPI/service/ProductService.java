@@ -33,7 +33,7 @@ public class ProductService {
         return productDAO.findByName(name).get();
     }
 
-    public void createProduct(String name, Double price,
+    public Product createProduct(String name, Double price,
                                 String shortDesc, String longDesc,
                               Integer quantity){
         Product product = new Product();
@@ -47,13 +47,13 @@ public class ProductService {
         inventory.setProduct(product);
         inventory.setQuantity(quantity);
         inventoryDAO.save(inventory);
+        return product;
     }
 
-    public String updateProductQuantity(Long id, Integer newQuantity){
+    public Inventory updateProductQuantity(Long id, Integer newQuantity){
         Inventory inventory = inventoryDAO.findByProduct(getProduct(id)).get();
         inventory.setQuantity(newQuantity);
-        inventoryDAO.save(inventory);
-        return "Quantity updated successfully";
+        return inventoryDAO.save(inventory);
     }
 
     public void deleteProduct(Long id){
