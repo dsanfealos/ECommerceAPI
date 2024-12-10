@@ -8,10 +8,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessageType;
-import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -29,7 +25,7 @@ import java.util.Optional;
  * object into the authentication context.
  */
 @Component
-public class JWTRequestFilter extends OncePerRequestFilter implements ChannelInterceptor {
+public class JWTRequestFilter extends OncePerRequestFilter{
 
     /** The JWT Service. */
     private JWTService jwtService;
@@ -84,26 +80,5 @@ public class JWTRequestFilter extends OncePerRequestFilter implements ChannelInt
         }
         SecurityContextHolder.getContext().setAuthentication(null);
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        SimpMessageType messageType =
-                (SimpMessageType) message.getHeaders().get("simpMessageType");
-        if (messageType.equals(SimpMessageType.SUBSCRIBE)
-                || messageType.equals(SimpMessageType.MESSAGE)) {
-            Map nativeHeaders = (Map) message.getHeaders().get("nativeHeaders");
-            if (nativeHeaders != null) {
-                List authTokenList = (List) nativeHeaders.get("Authorization");
-                if (authTokenList != null) {
-                    String tokenHeader = (String) authTokenList.get(0);
-                    checkToken(tokenHeader);
-                }
-            }
-        }
-        return message;
     }
 }
