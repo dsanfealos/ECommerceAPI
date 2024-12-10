@@ -1,6 +1,5 @@
 package com.ecommerce.ECommerceAPI.api.controller.user;
 
-import com.ecommerce.ECommerceAPI.api.model.DataChange;
 import com.ecommerce.ECommerceAPI.model.Address;
 import com.ecommerce.ECommerceAPI.model.LocalUser;
 import com.ecommerce.ECommerceAPI.model.dao.AddressDAO;
@@ -8,12 +7,10 @@ import com.ecommerce.ECommerceAPI.model.dao.LocalUserDAO;
 import com.ecommerce.ECommerceAPI.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -25,7 +22,6 @@ public class UserController {
 
     /** The Address DAO. */
     private AddressDAO addressDAO;
-    private SimpMessagingTemplate simpMessagingTemplate;
     private UserService userService;
     private LocalUserDAO localUserDAO;
 
@@ -36,10 +32,8 @@ public class UserController {
      * @param userService
      */
     public UserController(AddressDAO addressDAO,
-                          SimpMessagingTemplate simpMessagingTemplate,
                           UserService userService, LocalUserDAO localUserDAO) {
         this.addressDAO = addressDAO;
-        this.simpMessagingTemplate = simpMessagingTemplate;
         this.userService = userService;
         this.localUserDAO = localUserDAO;
     }
@@ -78,8 +72,6 @@ public class UserController {
         refUser.setId(userId);
         address.setUser(refUser);
         Address savedAddress = addressDAO.save(address);
-        simpMessagingTemplate.convertAndSend("/topic/user/" + userId + "/address",
-                new DataChange<>(DataChange.ChangeType.INSERT, address));
         return ResponseEntity.ok(savedAddress);
     }
 
@@ -105,8 +97,6 @@ public class UserController {
                 if (originalUser.getId() == userId) {
                     address.setUser(originalUser);
                     Address savedAddress = addressDAO.save(address);
-                    simpMessagingTemplate.convertAndSend("/topic/user/" + userId + "/address",
-                            new DataChange<>(DataChange.ChangeType.UPDATE, address));
                     return ResponseEntity.ok(savedAddress);
                 }
             }
