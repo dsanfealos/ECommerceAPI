@@ -154,4 +154,17 @@ public class UserServiceTest {
         Assertions.assertTrue(encryptionService.verifyPassword("Password123456",user.getPassword()),
                 "Password change should be written to DB.");
     }
+
+    @Test
+    @Transactional
+    public void testUpdateName(){
+        LocalUser user = localUserDAO.findByUsernameIgnoreCase("UserA").get();
+        String newFirstName = "Antonia";
+        String newLastName = "Bezoya";
+        userService.updateName(user.getId(), newFirstName, newLastName);
+        Assertions.assertTrue(user.getFirstName() == "Antonia",
+                "First name should be Antonia");
+        Assertions.assertTrue(user.getLastName() == "Bezoya",
+                "Last name should be Bezoya");
+    }
 }

@@ -30,9 +30,11 @@ public class WebSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable);
         http.addFilterBefore(jwtRequestFilter, AuthorizationFilter.class);
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/product", "/product/**", "/user/**", "/auth/register", "/auth/login",
+                .requestMatchers("/auth/register", "/auth/login",
                         "/auth/verify", "/error", "/auth/forgot", "/auth/reset").permitAll()
-                .anyRequest().authenticated());
+                .requestMatchers("/auth/me","/user/**", "/product", "/product/**",
+                        "/order", "/order/**").authenticated()
+                .anyRequest().hasRole("ADMIN"));
         return http.build();
     }
 }

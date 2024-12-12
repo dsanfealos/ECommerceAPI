@@ -8,8 +8,10 @@ import com.ecommerce.ECommerceAPI.exception.EmailNotFoundException;
 import com.ecommerce.ECommerceAPI.exception.UserAlreadyExistsException;
 import com.ecommerce.ECommerceAPI.exception.UserNotVerifiedException;
 import com.ecommerce.ECommerceAPI.model.LocalUser;
+import com.ecommerce.ECommerceAPI.model.Role;
 import com.ecommerce.ECommerceAPI.model.VerificationToken;
 import com.ecommerce.ECommerceAPI.model.dao.LocalUserDAO;
+import com.ecommerce.ECommerceAPI.model.dao.RoleDAO;
 import com.ecommerce.ECommerceAPI.model.dao.VerificationTokenDAO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ public class UserService {
     /** The email service. */
     private EmailService emailService;
 
+    private RoleDAO roleDAO;
+
     /**
      * Constructor injected by spring.
      *
@@ -45,12 +49,13 @@ public class UserService {
      * @param emailService
      */
     public UserService(LocalUserDAO localUserDAO, VerificationTokenDAO verificationTokenDAO, EncryptionService encryptionService,
-                       JWTService jwtService, EmailService emailService) {
+                       JWTService jwtService, EmailService emailService, RoleDAO roleDAO) {
         this.localUserDAO = localUserDAO;
         this.verificationTokenDAO = verificationTokenDAO;
         this.encryptionService = encryptionService;
         this.jwtService = jwtService;
         this.emailService = emailService;
+        this.roleDAO = roleDAO;
     }
 
     /**
@@ -70,6 +75,11 @@ public class UserService {
         user.setFirstName(registrationBody.getFirstName());
         user.setLastName(registrationBody.getLastName());
         user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
+        Role rol = roleDAO.findByName("USER");
+        if(rol == null){
+            rol = addRoleIfNotExists();
+        }
+        user.setRoles(List.of(rol));
         VerificationToken verificationToken = createVerificationToken(user);
         emailService.sendVerificationEmail(verificationToken);
         return localUserDAO.save(user);
@@ -184,6 +194,12 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         return localUserDAO.save(user);
+    }
+
+    private Role addRoleIfNotExists(){
+        Role role = new Role();
+        role.setName("USER");
+        return roleDAO.save(role);
     }
 
 }
