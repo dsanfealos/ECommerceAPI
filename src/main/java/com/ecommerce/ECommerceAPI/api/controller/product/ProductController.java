@@ -36,27 +36,11 @@ public class ProductController {
         return productService.getProductByName(name);
     }
 
-    //ADMIN - OK
-    @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Map<String, String> json){
-        Product product = productService.createProduct(json.get("name"), Double.valueOf(json.get("price")),
-                json.get("shortDesc"), json.get("longDesc"),
-                Integer.valueOf(json.get("quantity")));
-        return ResponseEntity.ok(product);
-    }
-
     //OK
     @PutMapping
     public ResponseEntity<Inventory> updateProductQuantity(@RequestBody Map<String,String> json){
         Inventory inventory = productService.updateProductQuantity(Long.valueOf(json.get("id")),
                 Integer.valueOf(json.get("quantity")));
         return ResponseEntity.ok(inventory);
-    }
-
-    //ADMIN - OK
-    @DeleteMapping("/{productId}")
-    public String deleteProduct(@PathVariable Long productId){
-        productService.deleteProduct(productId);
-        return "Product deleted successfully";
     }
 }

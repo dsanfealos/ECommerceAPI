@@ -28,7 +28,6 @@ public class UserController {
     /**
      * Constructor for spring injection.
      * @param addressDAO
-     * @param simpMessagingTemplate
      * @param userService
      */
     public UserController(AddressDAO addressDAO,
@@ -102,22 +101,6 @@ public class UserController {
             }
         }
         return ResponseEntity.badRequest().build();
-    }
-
-    //ADMIN - OK
-    @GetMapping("/{userId}")
-    public ResponseEntity<LocalUser> getLocalUser(@PathVariable Long userId){
-        Optional<LocalUser> user = localUserDAO.findById(userId);
-        if (user.isPresent()) return ResponseEntity.ok(user.get());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-
-    //ADMIN - OK
-    @GetMapping("/search")
-    public ResponseEntity<LocalUser> getLocalUserByUsername(@RequestParam String username){
-        Optional<LocalUser> user = localUserDAO.findByUsernameIgnoreCase(username);
-        if (user.isPresent()) return ResponseEntity.ok(user.get());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 }

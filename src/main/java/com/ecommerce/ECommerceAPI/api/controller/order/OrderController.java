@@ -36,12 +36,6 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    //ADMIN - OK
-    @GetMapping("/admin/{orderId}")
-    public ResponseEntity<WebOrder> getOrderAsAdmin(@PathVariable Long orderId){
-        return ResponseEntity.ok(orderService.getOrder(orderId));
-    }
-
     //OK?
     @PostMapping
     public WebOrder createOrder(@RequestBody OrderBody body,

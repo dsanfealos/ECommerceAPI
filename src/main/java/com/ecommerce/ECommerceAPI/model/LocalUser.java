@@ -43,6 +43,10 @@ public class LocalUser implements UserDetails {
     private List<WebOrder> webOrders = new ArrayList<>();
 
     @JsonIgnore
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
+    private List<Role> roles = new ArrayList<>();
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id desc")
     public List<VerificationToken> verificationTokens = new ArrayList<>();
@@ -153,5 +157,13 @@ public class LocalUser implements UserDetails {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
