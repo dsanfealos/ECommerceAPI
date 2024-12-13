@@ -1,8 +1,7 @@
 package com.ecommerce.ECommerceAPI.api.controller;
 
-import com.ecommerce.ECommerceAPI.model.LocalUser;
-import com.ecommerce.ECommerceAPI.model.Product;
-import com.ecommerce.ECommerceAPI.model.WebOrder;
+import com.ecommerce.ECommerceAPI.model.*;
+import com.ecommerce.ECommerceAPI.model.dao.AddressDAO;
 import com.ecommerce.ECommerceAPI.model.dao.LocalUserDAO;
 import com.ecommerce.ECommerceAPI.service.OrderService;
 import com.ecommerce.ECommerceAPI.service.ProductService;
@@ -22,13 +21,15 @@ public class AdminController {
     private UserService userService;
     private ProductService productService;
     private LocalUserDAO localUserDAO;
+    private AddressDAO addressDAO;
 
     public AdminController(OrderService orderService, UserService userService,
-                           ProductService productService, LocalUserDAO localUserDAO) {
+                           ProductService productService, LocalUserDAO localUserDAO, AddressDAO addressDAO) {
         this.orderService = orderService;
         this.userService = userService;
         this.productService = productService;
         this.localUserDAO = localUserDAO;
+        this.addressDAO = addressDAO;
     }
 
     @GetMapping("/order/{orderId}")
@@ -62,5 +63,17 @@ public class AdminController {
                 json.get("shortDesc"), json.get("longDesc"),
                 Integer.valueOf(json.get("quantity")));
         return ResponseEntity.ok(product);
+    }
+
+    @PutMapping
+    public ResponseEntity<Inventory> updateProductQuantity(@RequestBody Map<String,String> json){
+        Inventory inventory = productService.updateProductQuantity(Long.valueOf(json.get("id")),
+                Integer.valueOf(json.get("quantity")));
+        return ResponseEntity.ok(inventory);
+    }
+
+    @GetMapping("/address/{addressId}")
+    public ResponseEntity<Address> getAddress(@PathVariable Long addressId){
+        return ResponseEntity.ok(addressDAO.findById(addressId).get());
     }
 }

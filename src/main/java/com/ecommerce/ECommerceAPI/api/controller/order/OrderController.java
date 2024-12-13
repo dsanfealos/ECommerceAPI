@@ -26,7 +26,6 @@ public class OrderController {
         return orderService.getOrders(user);
     }
 
-    //OK - LOGGEDUSER
     @GetMapping("/{orderId}")
     public ResponseEntity<WebOrder> getOrder(@PathVariable Long orderId, @AuthenticationPrincipal LocalUser user){
         WebOrder order = orderService.getOrder(orderId);
@@ -36,7 +35,6 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    //OK?
     @PostMapping
     public WebOrder createOrder(@RequestBody OrderBody body,
                                                 @AuthenticationPrincipal LocalUser user){
