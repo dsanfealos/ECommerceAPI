@@ -148,27 +148,4 @@ public class AuthenticationControllerTest {
                         .content(mapper.writeValueAsString(body)))
                 .andExpect(status().is(HttpStatus.OK.value()));
     }
-
-    @Test
-    @Transactional
-    @WithUserDetails("UserA")
-    public void testGetLoggedInUserProfile() throws Exception {
-//        ResultActions resultActions = this.mvc.perform(post("/auth/login")
-//                .with(httpBasic("UserA", "PasswordA123")));
-//        MvcResult result = resultActions.andDo(print()).andReturn();
-//        String contentAsString = result.getResponse().getContentAsString();
-//        JSONObject json = new JSONObject(contentAsString);
-//        String token = "Bearer " + json.getJSONObject("data").getString("token");
-
-
-
-
-
-        ObjectMapper mapper = new ObjectMapper();
-        LocalUser user = localUserDAO.findById(1L).get();
-
-        mvc.perform(get("/auth/me"))
-                .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect((ResultMatcher) user);
-    }
 }

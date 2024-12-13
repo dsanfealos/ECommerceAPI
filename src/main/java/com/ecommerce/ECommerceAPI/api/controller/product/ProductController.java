@@ -24,23 +24,13 @@ public class ProductController {
         return productService.getProducts();
     }
 
-    //OK
     @GetMapping("/{productId}")
     public Product getProduct(@PathVariable Long productId){
         return productService.getProduct(productId);
     }
 
-    //OK
     @GetMapping("/search")
     public Product getProductByName(@RequestParam String name){
         return productService.getProductByName(name);
-    }
-
-    //OK
-    @PutMapping
-    public ResponseEntity<Inventory> updateProductQuantity(@RequestBody Map<String,String> json){
-        Inventory inventory = productService.updateProductQuantity(Long.valueOf(json.get("id")),
-                Integer.valueOf(json.get("quantity")));
-        return ResponseEntity.ok(inventory);
     }
 }
